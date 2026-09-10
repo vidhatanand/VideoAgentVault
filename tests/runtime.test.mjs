@@ -58,6 +58,17 @@ test('multiple named agents get independent keys; uploads, captions, search and 
   const transcript=await op('transcript_import',{videoId:video.data.id,expectedRevision:current.data.revision,segments:[{start:0,end:2,text:'A lighthouse guides ships safely.'}]});assert.equal(transcript.response.status,200,JSON.stringify(transcript.data));
   const search=await op('search_keyword',{query:'lighthouse'},keys[1].token);assert.equal(search.response.status,200,JSON.stringify(search.data));
   const self=await op('agent_self',{},keys[1].token);assert.equal(self.response.status,200);
+  const privateFolder=await request('/api/tenants/t_workspace/folders',{method:'POST',body:{name:'Owner only'}});
+  const forbidden=await op('upload_create',{title:'Denied',kind:'mp4',size:bytes.length,folderId:privateFolder.data.id});
+  assert.equal(forbidden.response.status,403,'Agent cannot upload outside assigned folders');
+  const initialize=await request('/mcp',{method:'POST',body:{jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-11-25',clientInfo:{name:'offline-contract-test',version:'1.0.0'},capabilities:{}}},key:keys[1].token});
+  assert.equal(initialize.response.status,200);assert.equal(initialize.data.result.serverInfo.name,'videoagentvault');
+  const list=await request('/mcp',{method:'POST',body:{jsonrpc:'2.0',id:2,method:'tools/list'},key:keys[1].token});
+  assert.ok(list.data.result.tools.some(tool=>tool.name==='search_keyword'));
+  assert.ok(!list.data.result.tools.some(tool=>tool.name==='billing_report'||tool.name.startsWith('live_')));
+  const call=await request('/mcp',{method:'POST',body:{jsonrpc:'2.0',id:3,method:'tools/call',params:{name:'search_keyword',arguments:{query:'lighthouse'}}},key:keys[1].token});
+  assert.equal(call.data.result.isError,false);
+
   const deny=await request('/api/tenants/t_other/operations/videos_list',{method:'POST',body:{},key:keys[1].token});assert.equal(deny.response.status,403);
   const suspended=await request(`/api/tenants/t_workspace/agents/${keys[0].agent}`,{method:'GET'});
   assert.equal((await request(`/api/tenants/t_workspace/agents/${keys[0].agent}`,{method:'PATCH',body:{expectedRevision:suspended.data.revision,status:'suspended'}})).response.status,200);

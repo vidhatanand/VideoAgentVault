@@ -9,6 +9,7 @@ Publication is permission to inspect, contribute and continue development. It is
 - The originating regression suite passed 263 tests. This is supporting evidence, not a substitute for tests in this repository.
 - A standalone Worker and processor Docker image dry-run build passed with Node 24.
 - Developer reference generation discovers 78 stored-video operations directly from runtime contracts.
+- [Public CI](https://github.com/vidhatanand/VideoAgentVault/actions/runs/34470162781) passed for the initial source preview. The public test suite also checks folder denial and MCP initialization, listing and search; these are offline protocol checks, not independent-client hosted acceptance.
 
 ## Still required for production release
 
@@ -17,7 +18,7 @@ Publication is permission to inspect, contribute and continue development. It is
 - Browser playback, captions, sharing, permission denial, approval and spend-limit acceptance.
 - Installer interruption/reconciliation tests; backup restoration and upgrade testing.
 - Dependency and processor distribution-license review, and an immutable corresponding-source offer verified against the deployed build.
-- Public CI and documentation deployment evidence.
+- Documentation deployment and browser acceptance evidence.
 
 Do not tag a stable release until these gates have reproducible evidence. Preserve test media and results when the installation owner requests it. Processing allowances are not account-wide Cloudflare billing caps.
 
