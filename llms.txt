@@ -1,0 +1,8 @@
+# VideoAgentVault
+
+Preparation candidate; not a deployable release.
+
+- [Overview](README.md)
+- [Agent deployment](docs/INSTALL_AGENT.md)
+- [Security](docs/SECURITY.md)
+- [Contributing](CONTRIBUTING.md)

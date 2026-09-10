@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "kind": "preparation",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "c4693468e1175a910f964e3665c9e65398d5a33ff238ed79d0f6e6417261be72"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "cb83ffb683b630a8bb1b79460b1235888ce4b61ce6405bbb74f453e800ad9776"
+    },
+    {
+      "path": "docs/INSTALL_AGENT.md",
+      "sha256": "facdaf924ba037bcddb9499b4747a54bbe3e735caecee02096d3ded00552672b"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "sha256": "e3e850f77ebaaee0e6ebdc31413547c2cfe95250e3e40d1ca27d860a2ecb0cdf"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "e51d2b00d5f6ca3601a91d04b6a6dd6f72061dc0da70246c2ed21bf5fa08da45"
+    },
+    {
+      "path": "llms.txt",
+      "sha256": "621262885c6dfd0b0b971d6285d89eae9f3db7420bd565194eaa59c1de5f65d4"
+    },
+    {
+      "path": "README.md",
+      "sha256": "d5bc72f5733dd79d9e27ae303734081dbe7b7b19063a2188e6632c1a62bc5737"
+    },
+    {
+      "path": "scripts/doctor.mjs",
+      "sha256": "1bfa85a34d88829c51e9885f0ab4ea52693e7b4d2a7f3d7b7ded71b28607597e"
+    }
+  ]
+}
