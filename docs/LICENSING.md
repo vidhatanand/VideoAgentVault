@@ -8,7 +8,7 @@ If you modify the program and your version supports remote network interaction, 
 
 ## Source availability in releases
 
-Released deployments must supply the source offer required for that deployed version. The release process must verify the source archive and relevant build/install instructions against the deployed artifact. Public repositories, CLI packages and documentation should reference the same immutable release. This preparation candidate has no deployed video runtime; source-offer integration remains a release requirement.
+Released deployments must supply the source offer required for that deployed version. The release process must verify the source archive and relevant build/install instructions against the deployed artifact. Public repositories, CLI packages and documentation should reference the same immutable release. This development preview includes a runtime source endpoint and UI link. Verifying their immutable target against an actual deployed build remains a release requirement.
 
 ## Prior and third-party notices
 

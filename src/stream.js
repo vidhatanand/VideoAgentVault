@@ -1,0 +1,23 @@
+/** Optional Stream encode -> signed MP4 export -> private R2. NOT an HLS export service. */
+import {signToken,seal,unseal} from './crypto.js';
+import {fail,now} from './util.js';
+export async function streamAPI(c,path,method='GET',body){if(c.env.STREAM_ENABLED!=='true'||!c.env.CLOUDFLARE_STREAM_TOKEN)fail(503,'STREAM_NOT_CONFIGURED');const r=await fetch(`https://api.cloudflare.com/client/v4/accounts/${c.env.CLOUDFLARE_ACCOUNT_ID}/stream${path}`,{method,headers:{Authorization:`Bearer ${c.env.CLOUDFLARE_STREAM_TOKEN}`,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(20000)});if(method==='DELETE'&&r.status===404)return null;let b;try{b=await r.json();}catch{fail(502,'STREAM_INVALID_RESPONSE');}if(!r.ok||b.success===false)fail(502,'STREAM_PROVIDER_ERROR',`Stream returned ${r.status}. See the Cloudflare dashboard; secrets are omitted here.`);return b.result;}
+export async function streamStep(c,j,v,p){
+ if(!j.stream_uid){
+  // Store an intention before the paid POST. A crash after provider acceptance is not blindly retried.
+  if(j.state==='stream_submitting')fail(409,'STREAM_SUBMIT_AMBIGUOUS','Inspect Stream for this job reference before retrying; automatic retry could duplicate paid storage.');
+  await c.db.run("UPDATE jobs SET state='stream_submitting',updated_at=? WHERE id=?",[now(),j.id]);
+  const token=await signToken({scope:'job-io',jid:j.id,tid:j.tenant_id},c.env.SIGNING_SECRET,43200);
+  const result=await streamAPI(c,'/copy','POST',{url:`${c.env.APP_ORIGIN}/source/${j.id}/${v.id}/${v.source_path}?token=${encodeURIComponent(token)}`,requireSignedURLs:true,meta:{name:v.title,videoagentvaultJob:j.id,tenantId:j.tenant_id}});
+  if(!result?.uid)fail(502,'STREAM_UID_MISSING');await c.db.run("UPDATE jobs SET stream_uid=?,stream_created_at=?,state='stream_waiting',updated_at=? WHERE id=?",[result.uid,now(),now(),j.id]);return {pending:true,state:'stream_waiting'};
+ }
+ const info=await streamAPI(c,`/${j.stream_uid}`);if(info.status?.state==='error')fail(502,'STREAM_ENCODING_FAILED');if(!info.readyToStream)return {pending:true,state:'stream_waiting'};
+ await c.db.run('UPDATE jobs SET provider_duration_seconds=? WHERE id=?',[info.duration||0,j.id]);
+ if(!p.downloadEnabled){await streamAPI(c,`/${j.stream_uid}/downloads`,'POST');return {pending:true,state:'stream_export_waiting',payload:{...p,downloadEnabled:true}};}
+ const result=await streamAPI(c,`/${j.stream_uid}/downloads`),download=result?.default;if(download?.status!=='ready')return {pending:true,state:'stream_export_waiting'};
+ const u=new URL(download.url);if(u.protocol!=='https:'||!u.hostname.endsWith('.cloudflarestream.com'))fail(502,'UNEXPECTED_STREAM_EXPORT_HOST');const t=await streamAPI(c,`/${j.stream_uid}/token`,'POST',{downloadable:true,exp:Math.floor(now()/1000)+3600});if(!t?.token)fail(502,'STREAM_TOKEN_MISSING');u.pathname=`/${t.token}/downloads/default.mp4`;
+ return {pending:true,state:'queued',payload:{...p,streamExport:true,downloadCipher:await seal(u.href,c.env.ENCRYPTION_SECRET||c.env.SIGNING_SECRET),providerDuration:info.duration||0}};
+}
+export async function streamCleanup(c,j){if(!j.stream_uid||j.stream_deleted_at)return;await streamAPI(c,`/${j.stream_uid}`,'DELETE');await c.db.run('UPDATE jobs SET stream_deleted_at=? WHERE id=?',[now(),j.id]);}
+/** Import an already-owned live recording, without deleting it on failures. */
+export async function streamImportStep(c,j,p){const recording=await c.db.one('SELECT * FROM live_recordings WHERE provider_uid=? AND tenant_id=? AND deleted_at IS NULL',[p.recordingId,j.tenant_id]);if(!recording)fail(404,'RECORDING_REMOVED');const info=await streamAPI(c,'/'+p.recordingId);if(!info.readyToStream)return {pending:true,state:'stream_waiting'};if(!p.downloadEnabled){await streamAPI(c,'/'+p.recordingId+'/downloads','POST');return {pending:true,state:'stream_export_waiting',payload:{...p,downloadEnabled:true}};}const downloads=await streamAPI(c,'/'+p.recordingId+'/downloads');if(downloads?.default?.status!=='ready')return {pending:true,state:'stream_export_waiting'};const u=new URL(downloads.default.url);if(u.protocol!=='https:'||!u.hostname.endsWith('.cloudflarestream.com'))fail(502,'UNEXPECTED_STREAM_EXPORT_HOST');const t=await streamAPI(c,'/'+p.recordingId+'/token','POST',{downloadable:true,exp:Math.floor(now()/1000)+3600});if(!t?.token)fail(502,'STREAM_TOKEN_MISSING');u.pathname=`/${t.token}/downloads/default.mp4`;return {pending:true,state:'queued',payload:{...p,streamExport:true,downloadCipher:await seal(u.href,c.env.ENCRYPTION_SECRET||c.env.SIGNING_SECRET),providerDuration:info.duration||recording.duration_seconds}};}

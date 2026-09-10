@@ -1,0 +1,27 @@
+{
+  "name": "videoagentvault",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "docs:build": "node scripts/docs.mjs",
+    "dev": "wrangler dev --port 8795"
+  },
+  "dependencies": {
+    "hls.js": "1.7.2"
+  },
+  "devDependencies": {
+    "wrangler": "4.126.0"
+  },
+  "overrides": {
+    "miniflare": {
+      "sharp": "0.35.4"
+    }
+  }
+}

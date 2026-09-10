@@ -1,0 +1,10 @@
+export const string={type:'string'},integer={type:'integer'},number={type:'number'},boolean={type:'boolean'};
+export const array=items=>({type:'array',items});
+export const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
+export const nullable=schema=>({...schema,type:[schema.type,'null']});
+export const ok=object({ok:{type:'boolean',enum:[true]}});
+export const identifier=object({id:string});
+export const jsonValue={type:['object','array','string','number','boolean','null'],description:'Operation-specific or caller-supplied JSON payload. Its internal keys are not a stable cross-operation field contract.'};
+export const union=(...anyOf)=>({type:'object',anyOf});
+export const extend=(row,add={},omit=[],optional=[])=>{const properties={...Object.fromEntries(Object.entries(row.properties).filter(([k])=>!omit.includes(k))),...add};return object(properties,Object.keys(properties).filter(k=>!optional.includes(k)));};
+export const pick=(row,keys)=>object(Object.fromEntries(keys.map(key=>[key,row.properties[key]])));

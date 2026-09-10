@@ -1,0 +1,3 @@
+import {agentOnly} from '../access/policy.js';
+import {fail} from '../util.js';
+export async function runJob(c,tid,b,v,p){if(!agentOnly(c)||!b.runId)return;const run=await c.db.one("SELECT * FROM agent_runs WHERE id=? AND tenant_id=? AND agent_id=? AND state='open'",[b.runId,tid,c.actor.agentId]);if(!run)fail(404,'RUN_NOT_FOUND');const inputs=JSON.parse(run.inputs_json);for(const id of p.sourceVideoIds||[v.id]){if(p.newVideo&&id===v.id)continue;const snapshot=inputs.find(x=>x.videoId===id);if(!snapshot||!await c.db.one('SELECT id FROM videos WHERE id=? AND revision=?',[id,snapshot.revision]))fail(409,'RUN_INPUT_VERSION_MISMATCH');}if(p.newVideo&&p.newVideo.folder!==run.output_folder_id)fail(403,'RUN_OUTPUT_FOLDER_MISMATCH');}

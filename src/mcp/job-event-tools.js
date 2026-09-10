@@ -1,0 +1,2 @@
+import {jobEvents} from '../job-events/service.js';
+export const jobEventTools=[{name:'job_events',description:'Replay authorized stored-video job state events after a durable sequence cursor. Poll until terminal and no more items. No live monitoring.',scope:'videos:read',inputSchema:{type:'object',properties:{jobId:{type:'string'},cursor:{type:'integer',minimum:0},limit:{type:'integer',minimum:1,maximum:100}},required:['jobId'],additionalProperties:false},annotations:{readOnlyHint:true,idempotentHint:true,destructiveHint:false,openWorldHint:false},fn:jobEvents}];

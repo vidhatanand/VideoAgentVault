@@ -1,0 +1,98 @@
+{
+  "name": "videoagentvault",
+  "main": "standalone/index.js",
+  "compatibility_date": "2026-09-08",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "vars": {
+    "ENVIRONMENT": "production",
+    "APP_ORIGIN": "https://video.example.com",
+    "WORKSPACE_ID": "t_workspace",
+    "AI_ENABLED": "true",
+    "STREAM_ENABLED": "false",
+    "METERING_MODE": "direct",
+    "MAX_VIDEO_BYTES": "4294967296",
+    "MAX_PROCESS_SOURCE_BYTES": "3221225472",
+    "MAX_OUTPUT_BYTES": "3221225472",
+    "SOURCE_URL": "https://github.com/vidhatanand/VideoAgentVault",
+    "RELEASE_SHA": "preparation"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "videoagentvault",
+      "database_id": "SET_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "VIDEOS",
+      "bucket_name": "videoagentvault-private"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "JOBS",
+        "queue": "videoagentvault-jobs"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "videoagentvault-jobs",
+        "max_batch_size": 1,
+        "max_retries": 5,
+        "max_concurrency": 2,
+        "dead_letter_queue": "videoagentvault-dlq"
+      }
+    ]
+  },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
+  "observability": {
+    "enabled": true
+  },
+  "containers": [
+    {
+      "class_name": "MediaContainer",
+      "image": "./processor/Dockerfile",
+      "instance_type": "standard-2",
+      "max_instances": 2
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MEDIA",
+        "class_name": "MediaContainer"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "MediaContainer"
+      ]
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "vectorize": [
+    {
+      "binding": "VECTORS",
+      "index_name": "videoagentvault-memory"
+    }
+  ]
+}

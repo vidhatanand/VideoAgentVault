@@ -1,0 +1,30 @@
+import {moveImpact} from '../access/moves.js';
+import * as A from './service.js';
+import * as P from '../approvals/service.js';
+import * as R from '../runs/service.js';
+import * as C from '../runs/claims.js';
+export function agentRoutes(route,body){
+ const root='/api/tenants/:tid';
+ route('POST',root+'/access/move-preview',async(c,p)=>moveImpact(c,p.tid,await body(c)));
+ route('GET',root+'/agents',(c,p)=>A.listAgents(c,p.tid));
+ route('POST',root+'/agents',async(c,p)=>A.saveAgent(c,p.tid,await body(c)));
+ route('GET',root+'/agents/:aid',(c,p)=>A.getAgent(c,p.tid,p.aid));
+ route('PATCH',root+'/agents/:aid',async(c,p)=>A.saveAgent(c,p.tid,await body(c),p.aid));
+ route('PUT',root+'/agents/:aid/grants',async(c,p)=>A.setGrants(c,p.tid,p.aid,await body(c)));
+ route('POST',root+'/agents/:aid/keys',async(c,p)=>A.agentKey(c,p.tid,p.aid,await body(c)));
+ route('POST',root+'/agents/:aid/constrain',async(c,p)=>A.constrainLegacy(c,p.tid,p.aid,await body(c)));
+ route('GET',root+'/agent-migration',(c,p)=>A.migrationReport(c,p.tid));
+ route('POST',root+'/agent-migration',async(c,p)=>A.migrationReport(c,p.tid,await body(c)));
+ route('GET',root+'/agent-self',(c,p)=>A.self(c,p.tid));
+ route('POST',root+'/access/explain',async(c,p)=>A.explain(c,p.tid,await body(c)));
+ route('GET',root+'/approvals',(c,p)=>P.listApprovals(c,p.tid));
+ route('POST',root+'/approvals',async(c,p)=>P.requestApproval(c,p.tid,await body(c)));
+ route('POST',root+'/approvals/:aid/decision',async(c,p)=>P.decideApproval(c,p.tid,p.aid,await body(c)));
+ route('GET',root+'/runs',(c,p)=>R.listRuns(c,p.tid));
+ route('POST',root+'/runs',async(c,p)=>R.createRun(c,p.tid,await body(c)));
+ route('GET',root+'/runs/:rid',(c,p)=>R.getRun(c,p.tid,p.rid));
+ route('PATCH',root+'/runs/:rid',async(c,p)=>R.closeRun(c,p.tid,p.rid,await body(c)));
+ route('POST',root+'/runs/:rid/artifacts',async(c,p)=>R.addReceipt(c,p.tid,p.rid,await body(c)));
+ route('POST','/api/videos/:vid/claims',async(c,p)=>C.claim(c,p.vid,await body(c)));
+ route('PATCH','/api/videos/:vid/claims',async(c,p)=>C.renewClaim(c,p.vid,await body(c)));
+}

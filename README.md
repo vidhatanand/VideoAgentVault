@@ -1,19 +1,30 @@
 # VideoAgentVault
 
-Secure video storage and retrieval for agents.
+Video infrastructure for agents: private storage, searchable evidence, derived clips and secure playback in your Cloudflare account.
 
-Preparation candidate. The application and installer are not released yet.
+**Development preview — not a production release.** This repository is the canonical development home. The standalone runtime and installer are available for testing; hosted release acceptance is still open. See [release status](docs/RELEASE_STATUS.md).
 
-The intended product lets you upload videos, import captions, find timestamped evidence, retrieve clips and serve secure players in your own Cloudflare account. One installation owns one workspace. Multiple agents receive separate identities, folder permissions, spending limits and approval policies.
+## What is included
 
-## Available in this candidate
+One workspace per installation, with multiple named agents and independent API keys. Agents use assigned folders, shared folders, revocable permissions, budgets, version checks, task claims, and separate publishing/deletion approval controls.
 
-A read-only prerequisite checker and installation/contribution guidance. There is no deploy command, runnable video application or automatic cloud provisioning in this candidate. Do not use it as a production release.
+The runtime exposes 78 stored-video operations through REST and MCP: resumable uploads, optional SRT captions, transcription and indexing, keyword/semantic search, timestamped evidence, summaries, derived clips, processing jobs and secure playback. These implementations still require the hosted acceptance listed in the release status. The CLI distribution is not included in this preview yet.
 
-Use Node 24. Run `node scripts/doctor.mjs --json` to inspect configuration. Set the documented environment variables before adding `--live` for read-only Cloudflare checks. Exit 1 means failed checks; exit 2 means verification is incomplete. No result currently certifies deployment readiness.
+## Develop
 
-See [agent installation instructions](docs/INSTALL_AGENT.md), [security](docs/SECURITY.md), and [contributing](CONTRIBUTING.md).
+Use Node 24 and Docker with Buildx for the processor build.
+
+```sh
+npm ci --ignore-scripts
+npm test
+npm run docs:build
+npm run build
+```
+
+Tests use isolated SQLite and object-storage adapters. They do not certify Cloudflare execution, video codecs or provider billing. The build bundles the Worker and builds the processor image without deploying.
+
+Start with the [agent installation guide](docs/INSTALL_AGENT.md), [agent workflows](docs/AGENT_WORKFLOWS.md), [security](docs/SECURITY.md), and [contributing](CONTRIBUTING.md).
 
 ## License
 
-This edition is licensed under the GNU Affero General Public License, version 3 only (`AGPL-3.0-only`). See [LICENSE](LICENSE) and [licensing guidance](docs/LICENSING.md). Commercial use and hosting are permitted subject to the license.
+GNU Affero General Public License, version 3 only (`AGPL-3.0-only`). Commercial use and hosting are permitted subject to the license. See [LICENSE](LICENSE), [licensing guidance](docs/LICENSING.md), and retained notices in `licenses/`.

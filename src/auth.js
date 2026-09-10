@@ -1,0 +1,12 @@
+import {singleWorkspaceAuth} from './auth/single-workspace.js';
+import {createAuth} from './auth/service.js';
+export {SCOPES,roles} from './auth/service.js';
+const service=c=>singleWorkspaceAuth(c.env.WORKSPACE_ID);
+export const authenticate=c=>service(c).authenticate(c);
+export const tenantAuth=(c,...args)=>service(c).tenantAuth(c,...args);
+export const login=(c,...args)=>service(c).login(c,...args);
+export const logout=c=>service(c).logout(c);
+export const createKey=(c,...args)=>service(c).createKey(c,...args);
+export const superAuth=c=>service(c).superAuth(c);
+export const isSuper=()=>false;
+export const {isLocal,csrf}=createAuth();

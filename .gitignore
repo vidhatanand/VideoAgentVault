@@ -1,0 +1,9 @@
+node_modules/
+.wrangler/
+.build/
+.site/
+.installation/
+wrangler.installation.jsonc
+.env
+.dev.vars
+public/vendor/

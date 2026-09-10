@@ -1,0 +1,53 @@
+import {agentRoutes} from '../src/agents/routes.js';
+import {contractRoutes} from '../src/contracts/routes.js';
+import {OPERATIONS,capabilities} from '../src/contracts/catalogue.js';
+import {validate} from '../src/mcp/validate.js';
+import {authenticate,tenantAuth,createKey} from '../src/auth.js';
+import {fail,integer,now,uid,text} from '../src/util.js';
+import * as L from '../src/library.js';
+import * as S from '../src/storage.js';
+import * as P from '../src/playback.js';
+import * as J from '../src/jobs.js';
+import * as IO from '../src/job-io.js';
+import * as F from '../src/media-features.js';
+import {uploadCaptionFile} from '../src/caption-upload.js';
+
+export function register(r){const {route,body}=r;agentRoutes(route,body);contractRoutes(route,body);
+  route('GET','/api/capabilities',c=>({...capabilities(c),sourceUrl:c.env.SOURCE_URL}));
+  route('GET','/api/me',async c=>({actor:await authenticate(c),tenants:await L.tenantList(c),capabilities:capabilities(c)}));
+  route('GET','/api/tenants',c=>L.tenantList(c));
+  route('POST','/api/workspace/operations/:name',async(c,p)=>{
+    const a=await authenticate(c);if(a.type!=='session')fail(403,'OWNER_SESSION_REQUIRED');
+    await tenantAuth(c,c.env.WORKSPACE_ID,'videos:write','owner');
+    const op=OPERATIONS.find(x=>x.name===p.name);if(!op)fail(404,'OPERATION_NOT_FOUND');
+    const args=await body(c);validate(op.inputSchema,args);return op.fn(c,c.env.WORKSPACE_ID,args);
+  });
+  route('POST','/api/workspace/budget',async c=>{
+    await tenantAuth(c,c.env.WORKSPACE_ID,'videos:write','owner');if(c.actor.type!=='session')fail(403,'OWNER_SESSION_REQUIRED');
+    const b=await body(c),amount=integer(b.amountMicros,'amountMicros',1,1e12),reference=text(b.requestKey,'requestKey',100);
+    const old=await c.db.one("SELECT delta_micros FROM wallet_ledger WHERE tenant_id=? AND kind='topup' AND reference=?",[c.env.WORKSPACE_ID,reference]);
+    if(old&&old.delta_micros!==amount)fail(409,'IDEMPOTENCY_AMOUNT_MISMATCH');
+    await c.db.run("INSERT INTO wallet_ledger(id,tenant_id,delta_micros,kind,reference,note,created_at) VALUES(?,?,?,'topup',?,'Owner-authorized provider spending limit',?) ON CONFLICT(tenant_id,kind,reference) DO NOTHING",[uid('w_'),c.env.WORKSPACE_ID,amount,reference,now()]);
+    return c.db.one('SELECT credit_micros FROM tenants WHERE id=?',[c.env.WORKSPACE_ID]);
+  });
+  route('GET','/api/tenants/:tid/videos',(c,p,q)=>L.listVideos(c,p.tid,q));
+  route('POST','/api/tenants/:tid/videos',async(c,p)=>S.createVideo(c,p.tid,await body(c)));
+  route('GET','/api/videos/:vid',(c,p)=>L.getVideo(c,p.vid));
+  route('PATCH','/api/videos/:vid',async(c,p)=>L.updateVideo(c,p.vid,await body(c)));
+  route('GET','/api/videos/:vid/upload',(c,p)=>S.uploadStatus(c,p.vid));
+  route('PUT','/api/videos/:vid/parts/:part',(c,p)=>S.uploadPart(c,p.vid,p.part));
+  route('POST','/api/videos/:vid/complete',(c,p)=>S.completeUpload(c,p.vid));
+  route('PUT','/api/videos/:vid/assets/*',(c,p)=>S.uploadHlsAsset(c,p.vid,p.path));
+  route('POST','/api/videos/:vid/captions/file',(c,p,q)=>uploadCaptionFile(c,p.vid,q));
+  route('PUT','/api/videos/:vid/captions/:trackId/file',(c,p,q)=>uploadCaptionFile(c,p.vid,q,p.trackId));
+  route('GET','/api/videos/:vid/tracks',(c,p)=>F.trackList(c,p.vid));
+  route('GET','/api/tenants/:tid/folders',(c,p)=>L.folderList(c,p.tid));
+  route('POST','/api/tenants/:tid/folders',async(c,p)=>L.folderWrite(c,p.tid,await body(c)));
+  route('GET','/api/jobs/:jid',(c,p)=>J.getJob(c,p.jid));
+  route('GET','/api/tenants/:tid/jobs',(c,p)=>J.jobList(c,p.tid));
+  for(const [action,fn]of Object.entries({start:P.startPlayback,renew:P.renewPlayback,heartbeat:P.heartbeat,stop:P.stopPlayback}))route('POST','/api/playback/'+action,async c=>fn(c,await body(c)));
+  route('PUT','/api/internal/jobs/:jid/asset/*',async(c,p)=>IO.internalAsset(c,await IO.jobAuth(c,p.jid),p.path));
+  route('POST','/api/internal/jobs/:jid/uploads',async(c,p)=>IO.internalUploadCreate(c,await IO.jobAuth(c,p.jid),await body(c)));
+  route('PUT','/api/internal/jobs/:jid/uploads/:upid/parts/:part',async(c,p)=>IO.internalUploadPart(c,await IO.jobAuth(c,p.jid),p.upid,p.part));
+  route('POST','/api/internal/jobs/:jid/uploads/:upid/complete',async(c,p)=>IO.internalUploadComplete(c,await IO.jobAuth(c,p.jid),p.upid));
+}
