@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (c) 2026 VideoAgentVault contributors
 import {pathToFileURL} from 'node:url';
 import path from 'node:path';
 

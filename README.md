@@ -13,3 +13,7 @@ A read-only prerequisite checker and installation/contribution guidance. There i
 Use Node 24. Run `node scripts/doctor.mjs --json` to inspect configuration. Set the documented environment variables before adding `--live` for read-only Cloudflare checks. Exit 1 means failed checks; exit 2 means verification is incomplete. No result currently certifies deployment readiness.
 
 See [agent installation instructions](docs/INSTALL_AGENT.md), [security](docs/SECURITY.md), and [contributing](CONTRIBUTING.md).
+
+## License
+
+This edition is licensed under the GNU Affero General Public License, version 3 only (`AGPL-3.0-only`). See [LICENSE](LICENSE) and [licensing guidance](docs/LICENSING.md). Commercial use and hosting are permitted subject to the license.
