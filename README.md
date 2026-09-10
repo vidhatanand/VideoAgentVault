@@ -4,6 +4,8 @@ Video infrastructure for agents: private storage, searchable evidence, derived c
 
 **Development preview — not a production release.** This repository is the canonical development home. The standalone runtime and installer are available for testing; hosted release acceptance is still open. See [release status](docs/RELEASE_STATUS.md).
 
+[Developer documentation](https://vidhatanand.github.io/VideoAgentVault/) · [Release status](docs/RELEASE_STATUS.md) · [Contributing](CONTRIBUTING.md)
+
 ## What is included
 
 One workspace per installation, with multiple named agents and independent API keys. Agents use assigned folders, shared folders, revocable permissions, budgets, version checks, task claims, and separate publishing/deletion approval controls.
