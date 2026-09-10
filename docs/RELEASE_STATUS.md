@@ -8,6 +8,7 @@ Publication is permission to inspect, contribute and continue development. It is
 - The exported application passed offline tests for one-workspace enforcement, named agents, independent keys, upload completion, transcript import, keyword search and suspended-key rejection.
 - The originating regression suite passed 263 tests. This is supporting evidence, not a substitute for tests in this repository.
 - A standalone Worker and processor Docker image dry-run build passed with Node 24.
+- All 18 synthetic-media processor tests passed in that image with network disabled, including real encrypted HLS/decryption, cuts, text overlays, audio exports, progress and input limits.
 - Developer reference generation discovers 78 stored-video operations directly from runtime contracts.
 - [Public CI](https://github.com/vidhatanand/VideoAgentVault/actions/runs/34470162781) passed for the initial source preview. The public test suite also checks folder denial and MCP initialization, listing and search; these are offline protocol checks, not independent-client hosted acceptance.
 

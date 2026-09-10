@@ -11,3 +11,14 @@ Never include credentials, real recordings or account identifiers. Use synthetic
 ## Contribution licensing
 
 Contributions intended for inclusion must be available under AGPL-3.0-only, with the contributor authorized to grant those rights. Preserve third-party notices and disclose their licenses. This policy does not assign copyright or grant a separate proprietary relicensing right. Requests to use a contribution under different terms require an explicit agreement with its rights holders.
+
+## Processor verification
+
+Run real codec checks with synthetic media inside the processor image:
+
+```sh
+docker build -t videoagentvault-processor processor
+docker run --rm --network none --entrypoint python -e PROCESSOR_MODULE=/app/server.py -v "$PWD/tests:/tests:ro" videoagentvault-processor -m unittest discover -s /tests -p 'test_*.py' -v
+```
+
+These tests exercise FFmpeg output, audio handling, encryption, measured progress, HTTP input limits and media validation. They have no cloud credentials and make no hosted AI requests. The public verification workflow runs them on pull requests.
