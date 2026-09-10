@@ -1,4 +1,4 @@
-import {capabilities,CONTRACT_VERSION,PROTOCOL_VERSIONS} from './contracts/catalogue.js';
+import {capabilities,PROTOCOL_VERSIONS} from './contracts/catalogue.js';
 import {TOOLS} from './mcp/catalogue.js';
 import {mcpOutputSchema} from './contracts/responses/index.js';
 export {TOOLS} from './mcp/catalogue.js';

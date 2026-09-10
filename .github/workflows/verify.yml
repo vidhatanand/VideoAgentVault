@@ -16,7 +16,15 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm test
+      - run: npm run cli:verify
+      - run: npm run mcp:verify
       - run: npm run docs:build
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: videoagentvault-cli-${{ github.sha }}
+          path: .release/cli/*
+          if-no-files-found: error
+          retention-days: 30
   processor:
     runs-on: ubuntu-latest
     timeout-minutes: 15

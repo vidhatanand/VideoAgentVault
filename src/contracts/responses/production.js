@@ -1,7 +1,7 @@
 import recipes from './rows/media_recipes.js';
 import timelines from './rows/timelines.js';
 import manifests from './rows/artifact_manifests.js';
-import {string,integer,number,boolean,array,object,nullable,jsonValue,extend,ok} from './types.js';
+import {string,integer,number,array,object,nullable,jsonValue,extend,ok} from './types.js';
 const recipe=extend(recipes,{inputs:array(jsonValue),variants:array(jsonValue)});
 const batch=object({id:string,recipeId:string,state:string,budgetMicros:integer,spentMicros:integer,deadlineAt:integer,lastError:nullable(string),completed:integer,total:integer,items:array(object({ordinal:integer,state:string,job_id:nullable(string),charge_micros:integer,reused:integer}))});
 const evidence=extend(manifests,{method:jsonValue,coverage:jsonValue,payload:jsonValue,watch:object({videoId:string,start:number,end:number})},['method_json','coverage_json','payload_json']);

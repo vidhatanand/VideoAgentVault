@@ -3,7 +3,7 @@ import {agentOnly} from './access/policy.js';
 import {tenantAuth} from './auth.js';
 import {requireVideo} from './library.js';
 import {quoteJob,createJob} from './jobs.js';
-import {fail,uid,now,text,integer,choice} from './util.js';
+import {fail,uid,now,integer,choice} from './util.js';
 import {ENCODING_PROFILES,mediaJobOptions} from './media-features.js';
 export async function getPolicy(c,tid){const t=await tenantAuth(c,tid,'videos:read','viewer');return JSON.parse(t.provider_policy_json);}
 export async function setPolicy(c,tid,b){const t=await tenantAuth(c,tid,'policy:write','owner');if(c.actor.type==='key')fail(403,'SESSION_REQUIRED');const p={...JSON.parse(t.provider_policy_json),...b};if(typeof p.allowStream!=='boolean')fail(400,'INVALID_STREAM_POLICY');const value={allowStream:p.allowStream,defaultProfile:choice(p.defaultProfile,Object.keys(ENCODING_PROFILES),'defaultProfile'),maxJobMicros:integer(p.maxJobMicros,'maxJobMicros',1000,1e10)};await c.db.run('UPDATE tenants SET provider_policy_json=? WHERE id=?',[JSON.stringify(value),tid]);await c.db.audit(tid,c.actor.email,'provider.policy',tid,value);return value;}

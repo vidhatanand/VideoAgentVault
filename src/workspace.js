@@ -1,4 +1,4 @@
-import {agentOnly,videoFilter,humanOnly,checkRevision,revisionOps,policyOps} from './access/policy.js';
+import {agentOnly,videoFilter,checkRevision,revisionOps,policyOps} from './access/policy.js';
 import {tenantAuth} from './auth.js';
 import {requireVideo,verifyFolder} from './library.js';
 import {fail,uid,now,text,integer,number,allowedExternal,randomToken,enc} from './util.js';

@@ -2,7 +2,7 @@ import {resourceDeleteOps} from './approvals/resources.js';
 import {agentOnly,bindKey,videoAccess,permission,policyOps,checkRevision,revisionOps} from './access/policy.js';
 import {claimOps} from './runs/claims.js';
 /** Stored-video extensions. Immutable R2 objects, tenant-scoped metadata and explicit export grants. */
-import {tenantAuth,authenticate,isSuper} from './auth.js';
+import {authenticate,isSuper} from './auth.js';
 import {requireVideo} from './library.js';
 import {putObject,getObject} from './storage.js';
 import {signToken,verifyToken} from './crypto.js';

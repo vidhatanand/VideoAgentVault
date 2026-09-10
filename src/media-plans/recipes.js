@@ -2,10 +2,10 @@ import {requireVersion} from '../evidence/versions.js';
 import {timelineSnapshot} from './timelines.js';
 import {tenantAuth} from '../auth.js';
 import {requireVideo} from '../library.js';
-import {inputSnapshot,validateInputs} from './reuse.js';
+import {inputSnapshot} from './reuse.js';
 import {mediaJobOptions} from '../media-features.js';
-import {hash,canonicalJSON,text,integer,number,fail,now,uid} from '../util.js';
-import {agentOnly,policyOps} from '../access/policy.js';
+import {hash,canonicalJSON,text,integer,fail,now,uid} from '../util.js';
+import {policyOps} from '../access/policy.js';
 export async function getRecipe(c,tid,id){await tenantAuth(c,tid,'videos:read');const r=await c.db.one('SELECT * FROM media_recipes WHERE id=? AND tenant_id=?',[id,tid]);if(!r)fail(404,'RECIPE_NOT_FOUND');const inputs=JSON.parse(r.inputs_json);for(const x of inputs){await requireVideo(c,x.videoId);for(const version of x.auxiliary||[])await requireVersion(c,version);}return {...r,inputs,variants:JSON.parse(r.variants_json)};}
 export async function createRecipe(c,tid,b){
  await tenantAuth(c,tid,'processing:write','editor');const name=text(b.name,'name',120),requestKey=text(b.requestKey,'requestKey',160),bodyHash=await hash(canonicalJSON(b));

@@ -3,7 +3,7 @@ import {folderAccess,agentOnly} from './access/policy.js';
 import {tenantAuth} from './auth.js';
 import {requireVideo,verifyFolder,publicVideo,applyTags} from './library.js';
 import {resolveHlsUri,getObject,putObject} from './storage.js';
-import {fail,uid,now,text,number,tagsInput,hash,canonicalJSON} from './util.js';
+import {fail,now,text,number,tagsInput,hash,canonicalJSON} from './util.js';
 
 function attrs(line){return Object.fromEntries([...line.matchAll(/([A-Z0-9-]+)=("[^"]*"|[^,]*)/g)].map(m=>[m[1],m[2].replace(/^"|"$/g,'')]));}
 export function readMaster(value,path){

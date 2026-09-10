@@ -1,11 +1,11 @@
-import {lineage,checkLineage,publicLineage,approvalLineage} from './access/lineage.js';
-import {bindKey,videoFilter,videoAccess,agentOnly,permission,policyOps} from './access/policy.js';
+import {lineage,publicLineage,approvalLineage} from './access/lineage.js';
+import {bindKey,videoFilter,videoAccess,permission,policyOps} from './access/policy.js';
 import {approvalOps} from './approvals/service.js';
-import {tenantAuth,authenticate,isSuper} from './auth.js';
+import {tenantAuth,isSuper} from './auth.js';
 import {signToken,verifyToken} from './crypto.js';
 import {requireVideo} from './library.js';
 import {getObject,rewriteHls} from './storage.js';
-import {fail,uid,now,hash,randomToken,text,integer,number,assetPath,parseRange,json} from './util.js';
+import {fail,uid,now,hash,randomToken,text,integer,number,assetPath,parseRange} from './util.js';
 function mediaUrl(c,v,path,token){return `${c.env.APP_ORIGIN}/media/${v.id}/${path}?token=${encodeURIComponent(token)}`;}
 async function tokenFor(c,v,sid){return signToken({scope:'playback',sid,vid:v.id,tid:v.tenant_id,pv:v.token_version},c.env.SIGNING_SECRET,Math.min(1800,Number(c.env.PLAYBACK_TTL_SECONDS||900)));}
 function originAllowed(c,v){const configured=JSON.parse(v.allowed_origins_json);const origin=c.req.headers.get('origin');if(origin&&origin!==c.env.APP_ORIGIN&&configured.length&&!configured.includes(origin))fail(403,'PLAYBACK_ORIGIN_REJECTED');return origin;}

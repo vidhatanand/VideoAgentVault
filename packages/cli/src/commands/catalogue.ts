@@ -1,0 +1,58 @@
+import fs from "node:fs/promises";
+export const cliVersion = JSON.parse(
+  await fs.readFile(new URL("../../package.json", import.meta.url), "utf8"),
+).version as string;
+export const catalogue = JSON.parse(
+  await fs.readFile(new URL("../../contracts.json", import.meta.url), "utf8"),
+);
+export const aliases: Record<string, string> = {
+  "plans create": "processing_plan",
+  "plans get": "processing_plan_get",
+  "plans execute": "processing_plan_execute",
+  "auth check": "agent_self",
+  "folders list": "folders_list",
+  "folders create": "folder_create",
+  "folders update": "folder_update",
+  "folders delete": "folder_delete",
+  "videos list": "videos_list",
+  "videos get": "video_get",
+  "videos update": "video_update",
+  "videos index": "processing_start",
+  "videos delete": "video_delete",
+  "evidence search": "evidence_search",
+  "evidence bundle": "evidence_bundle",
+  "evidence get": "evidence_bundle",
+  "sources versions": "source_versions",
+  "findings import": "finding_import",
+  "clips create": "clips_compose",
+  "exports create": "processing_start",
+  "exports get": "exports_list",
+  "downloads get": "download_create",
+  "players create": "playback_create",
+  "jobs quote": "processing_quote",
+  "jobs start": "processing_start",
+  "jobs get": "job_get",
+  "jobs list": "jobs_list",
+  "jobs cancel": "job_cancel",
+  "recipes create": "recipe_create",
+  "recipes list": "recipe_list",
+  "recipes get": "recipe_get",
+  "batches start": "batch_start",
+  "batches get": "batch_get",
+  "batches list": "batch_list",
+  "batches cancel": "batch_cancel",
+  "approvals request": "approval_request",
+  "approvals get": "approvals_list",
+  "usage get": "agent_self",
+  "storage get": "storage_inventory",
+  "captions save": "captions_save",
+  "captions list": "media_tracks_list",
+  "runs create": "run_create",
+  "runs get": "run_get",
+  "runs list": "runs_list",
+  "claims create": "work_claim",
+  "claims update": "work_claim_update",
+};
+export function operation(name: string) {
+  return catalogue.operations.find((t) => t.name === name);
+}

@@ -10,7 +10,7 @@ Video infrastructure for agents: private storage, searchable evidence, derived c
 
 One workspace per installation, with multiple named agents and independent API keys. Agents use assigned folders, shared folders, revocable permissions, budgets, version checks, task claims, and separate publishing/deletion approval controls.
 
-The runtime exposes 78 stored-video operations through REST and MCP: resumable uploads, optional SRT captions, transcription and indexing, keyword/semantic search, timestamped evidence, summaries, derived clips, processing jobs and secure playback. These implementations still require the hosted acceptance listed in the release status. The CLI distribution is not included in this preview yet.
+The runtime exposes 78 stored-video operations through REST and MCP: resumable uploads, optional SRT captions, transcription and indexing, keyword/semantic search, timestamped evidence, summaries, derived clips, processing jobs and secure playback. These implementations still require the hosted acceptance listed in the release status. A checksummed CLI archive can be built and tested from source; see the [CLI guide](docs/CLI.md).
 
 ## Develop
 
@@ -19,6 +19,8 @@ Use Node 24 and Docker with Buildx for the processor build.
 ```sh
 npm ci --ignore-scripts
 npm test
+npm run cli:verify
+npm run mcp:verify
 npm run docs:build
 npm run build
 ```

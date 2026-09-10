@@ -1,5 +1,5 @@
 export const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pages = {'README.md':'index.html','docs/INSTALL_AGENT.md':'installation.html','INSTALL_AGENT.md':'installation.html','AGENT_WORKFLOWS.md':'agents.html','docs/AGENT_WORKFLOWS.md':'agents.html','CONTRIBUTING.md':'contributing.html','LICENSING.md':'licensing.html','RELEASE_STATUS.md':'status.html','docs/RELEASE_STATUS.md':'status.html','SECURITY.md':'security.html','docs/SECURITY.md':'security.html','../LICENSE':'LICENSE.txt','LICENSE':'LICENSE.txt'};
+const pages = {'CLI.md':'cli.html','docs/CLI.md':'cli.html','RECOVERY.md':'recovery.html','docs/RECOVERY.md':'recovery.html','README.md':'index.html','docs/INSTALL_AGENT.md':'installation.html','INSTALL_AGENT.md':'installation.html','AGENT_WORKFLOWS.md':'agents.html','docs/AGENT_WORKFLOWS.md':'agents.html','CONTRIBUTING.md':'contributing.html','LICENSING.md':'licensing.html','RELEASE_STATUS.md':'status.html','docs/RELEASE_STATUS.md':'status.html','SECURITY.md':'security.html','docs/SECURITY.md':'security.html','../LICENSE':'LICENSE.txt','LICENSE':'LICENSE.txt'};
 function link(value) {
   const target=pages[value] || value;
   if (/^(?:https:\/\/|#)/.test(target)) return target;

@@ -1,5 +1,5 @@
 import {requestResourceApproval,resourceApprovals,decideResourceApproval} from './resources.js';
-import {lineage,lineageGuards,checkLineage,approvalLineage} from '../access/lineage.js';
+import {lineage,lineageGuards,approvalLineage} from '../access/lineage.js';
 import {tenantAuth} from '../auth.js';
 import {requireVideo} from '../library.js';
 import {agentOnly,permission,humanOnly,assertion,checkRevision,videoFilter} from '../access/policy.js';

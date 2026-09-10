@@ -1,5 +1,5 @@
 /** Optional Stream encode -> signed MP4 export -> private R2. NOT an HLS export service. */
-import {signToken,seal,unseal} from './crypto.js';
+import {signToken,seal} from './crypto.js';
 import {fail,now} from './util.js';
 export async function streamAPI(c,path,method='GET',body){if(c.env.STREAM_ENABLED!=='true'||!c.env.CLOUDFLARE_STREAM_TOKEN)fail(503,'STREAM_NOT_CONFIGURED');const r=await fetch(`https://api.cloudflare.com/client/v4/accounts/${c.env.CLOUDFLARE_ACCOUNT_ID}/stream${path}`,{method,headers:{Authorization:`Bearer ${c.env.CLOUDFLARE_STREAM_TOKEN}`,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(20000)});if(method==='DELETE'&&r.status===404)return null;let b;try{b=await r.json();}catch{fail(502,'STREAM_INVALID_RESPONSE');}if(!r.ok||b.success===false)fail(502,'STREAM_PROVIDER_ERROR',`Stream returned ${r.status}. See the Cloudflare dashboard; secrets are omitted here.`);return b.result;}
 export async function streamStep(c,j,v,p){

@@ -1,0 +1,26 @@
+{
+  "name": "videoagentvault-cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "bin": {
+    "videoagentvault": "dist/main.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "contracts.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vidhatanand/VideoAgentVault.git",
+    "directory": "packages/cli"
+  },
+  "description": "Scoped video, intelligence and playback operations for agents"
+}

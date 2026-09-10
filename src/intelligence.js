@@ -11,7 +11,7 @@ import {requireVideo,verifyFolder} from './library.js';
 import {putObject,getObject} from './storage.js';
 import {costEvent} from './meter.js';
 import {RATES,MARKUP,customerCostUsd} from './rates.js';
-import {fail,uid,now,text,integer,number,b64url,unb64url,enc,hash} from './util.js';
+import {fail,uid,now,text,integer,number,b64url,enc,hash} from './util.js';
 import {MODELS,gemmaInput,speechInput} from './ai/models.js';
 export {MODELS} from './ai/models.js';
 export function aiReady(c){if(!c.env.AI||c.env.AI_ENABLED!=='true')fail(503,'AI_NOT_ENABLED');}

@@ -12,7 +12,7 @@ import * as J from '../src/jobs.js';
 import {recoverBatches} from '../src/media-plans/batches.js';
 import {queueJobEvents} from '../src/job-events/service.js';
 import {deliverWebhooks} from '../src/workspace.js';
-import {playerCsp} from '../src/security-headers.js';
+import {playerCsp,workspaceCsp} from '../src/security-headers.js';
 export {MediaContainer} from '../src/container.js';
 const routes=router();register(routes);
 export const ROUTE_CATALOG=routes.routes.map(({method,path})=>({method,path}));
@@ -43,7 +43,7 @@ async function dispatch(c){
   if(p.startsWith('/watch/')){
     const v=await c.db.one("SELECT allowed_origins_json FROM videos WHERE id=? AND tenant_id=? AND status NOT IN ('deleted','deleting')",[p.slice(7),c.env.WORKSPACE_ID]);
     if(!v)fail(404,'VIDEO_NOT_FOUND');headers.set('Content-Security-Policy',playerCsp(JSON.parse(v.allowed_origins_json)));
-  }else headers.set('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'");
+  }else headers.set('Content-Security-Policy',workspaceCsp());
   const asset=await c.env.ASSETS.fetch(c.req);for(const [k,v]of asset.headers)if(!headers.has(k))headers.set(k,v);
   return new Response(asset.body,{status:asset.status,headers});
 }

@@ -7,3 +7,6 @@ wrangler.installation.jsonc
 .env
 .dev.vars
 public/vendor/
+.release/
+packages/cli/dist/
+__pycache__/

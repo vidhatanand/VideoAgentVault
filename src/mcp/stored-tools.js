@@ -1,5 +1,4 @@
 import {deleteTimeline} from '../approvals/resources.js';
-import {customerView,customerRates} from '../customer-pricing.js';
 import * as F from '../media-features.js';
 import * as C from '../clips.js';
 import * as R from '../provider-policy.js';
@@ -11,9 +10,7 @@ import * as P from '../playback.js';
 import * as I from '../intelligence.js';
 import * as W from '../workspace.js';
 import * as B from '../billing.js';
-import {authenticate,tenantAuth} from '../auth.js';
-import {json,fail,bodyJSON,text,now} from '../util.js';
-import {RATES,RATE_VERSION} from '../rates.js';
+import {text} from '../util.js';
 const str={type:'string'},num={type:'number'},bool={type:'boolean'},int={type:'integer'},arr={type:'array',items:str};
 const tool=(name,description,scope,properties,required,fn,destructive=false)=>({name,description,scope,inputSchema:{type:'object',properties:{...properties,expectedRevision:{type:'integer'},approvalId:{type:'string'},runId:{type:'string'},claim:{type:'object',properties:{task:{type:'string'},fence:{type:'integer'}},required:['task','fence'],additionalProperties:false}},required,additionalProperties:false},annotations:{readOnlyHint:/(_list|_get|_quote|_report)$/.test(name)&&!name.includes('credentials'),destructiveHint:destructive,idempotentHint:name.includes('list')||name.includes('get'),openWorldHint:false},fn});
 export const STORED_TOOLS=[

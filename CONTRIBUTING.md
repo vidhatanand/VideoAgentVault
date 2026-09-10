@@ -22,3 +22,7 @@ docker run --rm --network none --entrypoint python -e PROCESSOR_MODULE=/app/serv
 ```
 
 These tests exercise FFmpeg output, audio handling, encryption, measured progress, HTTP input limits and media validation. They have no cloud credentials and make no hosted AI requests. The public verification workflow runs them on pull requests.
+
+## Maintainable changes
+
+Keep changes in focused modules and preserve the generated operation contracts. Run `npm test` for runtime, UI contract, recovery and unused-import checks; run `npm run cli:verify` for the actual package and `npm run mcp:verify` for the independent local client. CLI typechecking rejects unused locals and parameters. Format new CLI, installer and recovery modules with Prettier 3.6.2. The [maintainability review](https://github.com/vidhatanand/VideoAgentVault/blob/main/docs/MAINTAINABILITY.md) records the current scope and limitations.

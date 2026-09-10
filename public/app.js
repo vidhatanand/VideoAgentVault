@@ -1,5 +1,7 @@
+import {resolveEntry} from './entry.js';
 import {api,op,panel,escape,form,error,bytes,usd} from './client.js';
-import {processVideo,watchJob} from './processing.js';
+import {processVideo} from './processing.js';
+import {watchJob} from './job-progress.js';
 import {mountPlayer} from './player.js';
 const content=document.querySelector('#content');let workspace,player;
 const money=s=>{if(!/^\d+(?:\.\d{1,2})?$/.test(s))throw new Error('Enter a dollar amount with at most two decimal places.');return Math.round(Number(s)*1e6);};
@@ -41,4 +43,4 @@ async function newAgent(){const folders=await api(`/api/tenants/${workspace}/fol
 }
 async function jobs(){const data=await op('jobs_list');const items=Array.isArray(data)?data:data.items||[];content.innerHTML='<h1>Work in progress.</h1><p>Follow processing stages and revisit retained results.</p>';for(const j of items){const row=document.createElement('article');row.className='row';row.innerHTML=`<h3>${escape(j.kind)} <span class="pill">${escape(j.state)}</span></h3><p>${escape(j.id)}</p><button>View progress and result</button>`;row.querySelector('button').onclick=()=>watchJob(j.id,panel('Processing activity',''));content.append(row);}}
 for(const button of document.querySelectorAll('[data-page]'))button.onclick=()=>({library,agents,jobs}[button.dataset.page]()).catch(ex=>error(content,ex));
-try{const source=await api('/source-code');if(source.sourceUrl&&new URL(source.sourceUrl).protocol==='https:')document.querySelector('#source').href=source.sourceUrl;const me=await api('/api/me');workspace=me.tenants[0]?.id;if(!workspace)throw new Error('The installation has no accessible workspace.');const match=/^\/watch\/(.+)$/.exec(location.pathname);if(match)await openVideo(await op('video_get',{videoId:match[1]}));else await library();}catch(ex){if(!/LOGIN_REQUIRED|SESSION_REVOKED/.test(ex.message))error(content,ex);}
+try{const source=await api('/source-code');if(source.sourceUrl&&new URL(source.sourceUrl).protocol==='https:')document.querySelector('#source').href=source.sourceUrl;const entry=await resolveEntry(new URL(location.href),{api,op});workspace=entry.workspace;if(entry.kind==='shared'){document.querySelector('nav[aria-label=Workspace]').hidden=true;content.innerHTML='<h1>Shared video</h1><div id=player></div>';player=await mountPlayer(document.querySelector('#player'),{...entry,api,onError:message=>error(content,new Error(message))});}else if(entry.kind==='video')await openVideo(entry.video);else await library();}catch(ex){if(!/LOGIN_REQUIRED|SESSION_REVOKED/.test(ex.message))error(content,ex);}

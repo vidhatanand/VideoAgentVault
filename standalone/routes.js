@@ -2,7 +2,7 @@ import {agentRoutes} from '../src/agents/routes.js';
 import {contractRoutes} from '../src/contracts/routes.js';
 import {OPERATIONS,capabilities} from '../src/contracts/catalogue.js';
 import {validate} from '../src/mcp/validate.js';
-import {authenticate,tenantAuth,createKey} from '../src/auth.js';
+import {authenticate,tenantAuth} from '../src/auth.js';
 import {fail,integer,now,uid,text} from '../src/util.js';
 import * as L from '../src/library.js';
 import * as S from '../src/storage.js';
