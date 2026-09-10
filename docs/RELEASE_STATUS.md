@@ -37,7 +37,7 @@ Do not tag a stable release until these gates have reproducible evidence. Preser
 
 ## Cleanup verification
 
-The maintainability pass removed 37 unused application imports, separated browser entry/progress modules and added unused-code regression checks. The complete local suite passes 28 tests; the extracted CLI passes ten additional distribution checks. Worker/processor dry-run build and CI results must be checked for the exact published revision.
+The maintainability pass removed 37 unused application imports, separated browser entry/progress modules and added unused-code regression checks. The complete local suite passes 28 tests; the extracted CLI passes ten additional distribution checks. The Worker dry-run build passed. [Verification CI for 27e0394](https://github.com/vidhatanand/VideoAgentVault/actions/runs/34496678080) passed, including all 18 processor tests, the extracted CLI and official MCP Inspector. Its checksummed CLI artifact is available from that run. [Documentation deployment](https://github.com/vidhatanand/VideoAgentVault/actions/runs/34496678191) also passed; the CLI, recovery and status pages were checked live. The three temporary synthetic D1 databases were removed after verification, with private backups and evidence retained.
 
 ## Development and releases
 
