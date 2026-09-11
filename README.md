@@ -29,8 +29,6 @@ VideoAgentVault brings those steps into one workspace. Upload a recording once, 
 Your agent can keep running wherever you already run it. VideoAgentVault provides the video storage, intelligence operations, access controls and delivery interfaces it calls.
 
 > “Find the part of this product walkthrough where the launch process is explained. Return the evidence and prepare a clip for review.”
->
-> A workflow to build with the API—not a claim that every hosted acceptance gate has passed.
 
 ## What you can build
 
@@ -248,6 +246,31 @@ Contract `2026-09-10.2`. Every operation below comes from the runtime catalogue.
 | [`sources_list`](https://vidhatanand.github.io/VideoAgentVault/reference.html#sources_list) | List source metadata without decrypting ingestion credentials. | `videos:read` |
 | [`source_create`](https://vidhatanand.github.io/VideoAgentVault/reference.html#source_create) | Register an administrator-allowlisted HTTPS source; ingestion/capture requires a separate processing job. | `sources:write` |
 | [`provider_policy_get`](https://vidhatanand.github.io/VideoAgentVault/reference.html#provider_policy_get) | Read owner-controlled Stream permission, default quality and per-job budget ceiling. MCP keys cannot change provider policy. | `videos:read` |
+
+</details>
+
+<details>
+<summary><strong>Processing modes</strong> · 15 job kinds</summary>
+
+These modes share the `processing_start` operation. Model calls and container jobs require explicit budgets and configured services. The default preview does not enable the optional Stream paths.
+
+| Mode | What it does | Service or boundary |
+| :-- | :-- | :-- |
+| `probe` | Inspect media metadata and streams. | Container; hosted acceptance open |
+| `transcode` | Prepare adaptive streaming renditions. | Container; hosted acceptance open |
+| `preview` | Create previews, poster frames and seek sprites. | Container; hosted acceptance open |
+| `export` | Produce MP4 video or M4A audio exports. | Container; hosted acceptance open |
+| `index` | Build speech and sampled visual evidence. | Workers AI and processing services |
+| `render` | Render composed timelines and derived video. | Container; hosted acceptance open |
+| `capture` | Capture a bounded recording from a configured source. | Owner-controlled source access; hosted acceptance open |
+| `semantic_search` | Retrieve indexed evidence by semantic similarity. | Workers AI and Vectorize |
+| `ask` | Answer questions using indexed video evidence. | Workers AI; hosted acceptance open |
+| `summarize` | Produce a structured video summary. | Workers AI; hosted acceptance open |
+| `embed_artifacts` | Embed existing artifacts for semantic retrieval. | Workers AI and Vectorize |
+| `generate_image` | Generate an image asset with the configured model. | Workers AI; hosted acceptance open |
+| `generate_speech` | Generate a speech asset with the configured model. | Workers AI; hosted acceptance open |
+| `stream` | Encode through optional Cloudflare Stream and import an MP4. | Disabled in the default preview configuration |
+| `stream_import` | Import an existing Stream recording. | Compatibility path; disabled in the default preview configuration |
 
 </details>
 
