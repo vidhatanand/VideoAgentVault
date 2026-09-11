@@ -26,3 +26,7 @@ These tests exercise FFmpeg output, audio handling, encryption, measured progres
 ## Maintainable changes
 
 Keep changes in focused modules and preserve the generated operation contracts. Run `npm test` for runtime, UI contract, recovery and unused-import checks; run `npm run cli:verify` for the actual package and `npm run mcp:verify` for the independent local client. CLI typechecking rejects unused locals and parameters. Format new CLI, installer and recovery modules with Prettier 3.6.2. The [maintainability review](https://github.com/vidhatanand/VideoAgentVault/blob/main/docs/MAINTAINABILITY.md) records the current scope and limitations.
+
+## README features and screenshots
+
+Run `npm run docs:readme` after changing operation contracts. The README catalogue is generated from the runtime and tests require every operation exactly once. Keep screenshot provenance in [the gallery notes](https://github.com/vidhatanand/VideoAgentVault/blob/main/docs/GALLERY.md); use synthetic data and inspect each capture before committing it.

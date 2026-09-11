@@ -15,7 +15,8 @@
     "pretest": "npm run cli:build",
     "cli:build": "node scripts/cli/contracts.mjs && tsc -p packages/cli/tsconfig.json && node scripts/cli/build.mjs",
     "cli:verify": "npm run cli:build && node scripts/cli/package.mjs && node scripts/cli/package-smoke.mjs",
-    "mcp:verify": "node scripts/acceptance/mcp-inspector.mjs"
+    "mcp:verify": "node scripts/acceptance/mcp-inspector.mjs",
+    "docs:readme": "node scripts/docs/readme.mjs"
   },
   "dependencies": {
     "hls.js": "1.7.2"
